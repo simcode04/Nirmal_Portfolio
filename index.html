@@ -79,6 +79,7 @@
       background: rgba(0, 0, 0, 0.5);
       z-index: -1;
     }
+    
 
     header {
       height: 100vh;
@@ -220,24 +221,27 @@
   </style>
 </head>
 <body>
-  <div id="vanta-bg"></div>
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="background.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
-  <div class="overlay"></div>
-
-  <header>
-    <img src="NIRMAL_PHOTO.jpg" alt="Nirmal Simhadri" />
-    <h1>Nirmal Simhadri</h1>
-    <h2>Full Stack Developer | Java | React | Angular | Python | Spring Boot | Kafka | RestFull Web API's |AWS</h2>
-    <h3> Immediate  availability for work anywhere in the US<br> Full TIme--W2--C2C</h3>
-
-    <div class="button-group">
-      <a href="Nirmal_Simhadri_Resume.pdf" download class="resume-button" onclick="downloadResume()">Download Resume</a>
-      <button class="hire-button" onclick="showContactInfo()">Hire Me</button>
-    </div>
-  </header>
+    <div id="vanta-bg"></div>
+    <video autoplay muted loop playsinline id="bg-video">
+      <source src="background.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="overlay"></div>
+  
+    <!-- 🎇 Fireworks Canvas (newly added!) -->
+    <canvas id="fireworks-canvas"></canvas>
+  
+    <header>
+      <img src="NIRMAL_PHOTO.jpg" alt="Nirmal Simhadri" />
+      <h1>Nirmal Simhadri</h1>
+      <h2>Full Stack Developer | Java | React | Angular | Python | Spring Boot | Kafka | RestFull Web API's |AWS</h2>
+      <h3> Immediate  availability for work anywhere in the US<br> Full Time--W2--C2C</h3>
+  
+      <div class="button-group">
+        <a href="Nirmal_Simhadri_Resume.pdf" download class="resume-button" onclick="downloadResume()">Download Resume</a>
+        <button class="hire-button" onclick="showContactInfo()">Hire Me</button>
+      </div>
+    </header>
 
   <section>
     <h3>About Me</h3>
@@ -379,5 +383,77 @@
       }
     }
   </script>
+  <script>
+    const canvas = document.getElementById('fireworks-canvas');
+    const ctx = canvas.getContext('2d');
+  
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.zIndex = "-1"; /* Behind header but above video */
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 4 + 1;
+        this.speedX = Math.random() * 6 - 3;
+        this.speedY = Math.random() * 6 - 3;
+        this.color = 'hsl(' + Math.random() * 360 + ', 100%, 50%)';
+        this.life = 100;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life--;
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  
+    let particles = [];
+  
+    function createFirework(x, y) {
+      for (let i = 0; i < 30; i++) {
+        particles.push(new Particle(x, y));
+      }
+    }
+  
+    function animateFireworks() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((particle, index) => {
+        particle.update();
+        particle.draw();
+        if (particle.life <= 0) {
+          particles.splice(index, 1);
+        }
+      });
+      requestAnimationFrame(animateFireworks);
+    }
+  
+    canvas.addEventListener('click', (e) => {
+      createFirework(e.clientX, e.clientY);
+    });
+  
+    setInterval(() => {
+      createFirework(Math.random() * canvas.width, Math.random() * canvas.height / 2);
+    }, 1000);
+  
+    animateFireworks();
+  </script>
+  
 </body>
 </html>
